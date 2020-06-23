@@ -7,15 +7,15 @@
       </div>
 
       <!-- 表单 -->
-      <el-form  v-model="loginForm" label-width="0px" class="login_form">
+      <el-form  :model="loginForm"  :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户 -->
-        <el-form-item>
+        <el-form-item prop="username">
           <el-input  v-model="loginForm.username" prefix-icon="iconfont icon-user">
           </el-input>
         </el-form-item>
 
         <!-- 密码 -->
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input  v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password">
           </el-input>
         </el-form-item>
@@ -36,8 +36,18 @@ export default {
     data(){
         return {
             loginForm:{
-                username:'dd',
+                username:'ddd',
                 password:'dd'
+            },
+            loginFormRules:{
+              username:[
+                { required: true, message: '请输入活动名称', trigger: 'blur' },
+                { min: 1, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+              ],
+              password:[
+                { required: true, message: '请输入密码', trigger: 'blur' },
+                { min: 1, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+              ]
             }
         }
     }
@@ -80,6 +90,8 @@ export default {
     }
   }
 }
+
+
 .btns {
     display: flex;
     justify-content: flex-end;
