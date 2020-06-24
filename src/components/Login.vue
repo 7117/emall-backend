@@ -36,8 +36,8 @@ export default {
     data(){
         return {
             loginForm:{
-                username:'ddd',
-                password:'dd'
+                username:'admin',
+                password:'123456'
             },
             loginFormRules:{
               username:[
@@ -46,7 +46,7 @@ export default {
               ],
               password:[
                 { required: true, message: '请输入密码', trigger: 'blur' },
-                { min: 1, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                { min: 1, max: 15, message: '长度在 3 到 5 个字符', trigger: 'blur' }
               ]
             }
         }
@@ -57,8 +57,23 @@ export default {
       },
       login(){
         // 回调函数
-        this.$refs.loginFormRef.validate((valid)=>{
+        this.$refs.loginFormRef.validate(async valid=>{
+          if(!valid){
+            return;
+          }
+          // 重新的选取变量进行赋值
+          // 问题  await与async
+          const {data:res} = await this.$http.post('login',this.loginForm);
+                    
+          if (res.meta.status !== 200 ){
+            return this.$message.error("失败");
+          }
           
+          this.$message.success("成功");
+          // 存储token
+          window.sessionStorage.setItem("token",res.data.token);
+          // 跳转
+          this.$router.push("/home");
         }) 
       }
     }
