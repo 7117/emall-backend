@@ -19,13 +19,20 @@
         </el-col>
       </el-row>
 
-      <!-- 列表区 -->
+      <!-- 列表区表格区域 -->
       <el-table :data="userlist" border stripe>
+        <el-table-column label="ID" type="index"></el-table-column>
         <el-table-column label="姓名" prop="username"></el-table-column>
         <el-table-column label="邮箱" prop="email"></el-table-column>
         <el-table-column label="电话" prop="mobile"></el-table-column>
         <el-table-column label="角色" prop="role_name"></el-table-column>
-        <el-table-column label="状态" prop="mg_state"></el-table-column>
+        <el-table-column label="状态" prop="mg_state">
+          <!-- 插槽 -->
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作"></el-table-column>
       </el-table>
     </el-card>
   </div>
