@@ -9,37 +9,83 @@
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b">
+      <el-aside :width="isCollapse?'64px':'200px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <el-menu
+          background-color="#333744"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          :unique-opened="true"
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          :router="true"
+          :default-active="$route.path"
+        >
           <!-- 一级菜单 -->
-          <el-submenu index="1">
+          <el-submenu v-for="item in menulist" :key="item.id" :index="item.id + ''">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <i :class="iconsObj[item.id]"></i>
+              <span>{{item.authName}}</span>
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item index="1-4-1">
+            <el-menu-item
+              :index=" '/' +subItem.path"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+            >
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>导航一</span>
+                <i class="el-icon-menu"></i>
+                <span>{{subItem.authName}}</span>
               </template>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main>
+        <!-- 路由占位符 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
 export default {
+  // 定义一个生命周期函数  一加载就会进行请求数据
+  created() {
+    this.getMenuList();
+  },
+
+  data() {
+    return {
+      menulist: [],
+      iconsObj: {
+        "125": "iconfont icon-user",
+        "103": "iconfont icon-shangpin",
+        "101": "iconfont icon-user",
+        "102": "iconfont icon-danju",
+        "145": "iconfont icon-user"
+      },
+      isCollapse: false
+    };
+  },
+
   methods: {
     // 退出
     logout() {
       window.sessionStorage.clear();
       this.$router.push("/login");
+    },
+    async getMenuList() {
+      const { data: res } = await this.$http.get("/menus");
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg);
+      }
+      this.menulist = res.data;
+    },
+    toggleCollapse() {
+      return (this.isCollapse = !this.isCollapse);
     }
   }
 };
@@ -68,8 +114,24 @@ export default {
 }
 .el-aside {
   background-color: #333744;
+  .el-menu {
+    border-right: none;
+  }
 }
 .el-main {
   background-color: #eaedf1;
+}
+.iconfont {
+  margin-right: 6px;
+}
+.toggle-button {
+  background-color: #4a5064;
+  color: #fff;
+  font-size: 10px;
+  line-height: 24px;
+  display: flex;
+  justify-content: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
 }
 </style>
