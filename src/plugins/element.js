@@ -5,10 +5,11 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
-    Button,Form,FormItem,Input,Message,Container,Header,Aside,Main,menu,submenu,MenuItemGroup,MenuItem,Breadcrumb,BreadcrumbItem,Card,Row,Col
+    Table,TableColumn,Button,Form,FormItem,Input,Message,Container,Header,Aside,Main,menu,submenu,MenuItemGroup,MenuItem,Breadcrumb,BreadcrumbItem,Card,Row,Col
 } from 'element-ui'
 
-
+Vue.use(Table)
+Vue.use(TableColumn)
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
