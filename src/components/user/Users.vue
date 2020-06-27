@@ -10,12 +10,17 @@
       <!-- 搜索框 -->
       <el-row :gutter="20">
         <el-col :span="9">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="queryInfo.query"
+            :clearable="true"
+            @clear="getUserList()"
+          >
+            <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
 
@@ -29,7 +34,12 @@
         <el-table-column label="状态" prop="mg_state">
           <!-- 插槽 -->
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            <el-switch
+              v-model="scope.row.mg_state"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="userStateChange(scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
@@ -59,6 +69,32 @@
         :total="total"
       ></el-pagination>
     </el-card>
+
+    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%">
+      <!-- model双向数据绑定 -->
+      <!-- rules验证规则 -->
+      <!-- ref表单的引用名称 -->
+      <el-form :model="addForm" :rules="addFormRules" ref="ruleFormRef" label-width="70px">
+        <!-- prop验证规则 -->
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="password">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="email">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="mobile">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -73,7 +109,28 @@ export default {
         pagesize: 2
       },
       userlist: [],
-      total: 0
+      total: 0,
+      addDialogVisible: false,
+      addForm: {
+        username: "",
+        email: "",
+        password: "",
+        mobile: ""
+      },
+      addFormRules: {
+        username: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+        ],
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+        ]
+      }
     };
   },
   created() {
@@ -98,7 +155,22 @@ export default {
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage;
       this.getUserList();
-    }
+    },
+    async userStateChange(userinfo) {
+      const { data: res } = await this.$http.put(
+        `users/${userinfo.id}/state/${userinfo.mg_state}`
+      );
+
+      if (res.meta.status != 200) {
+        userinfo.mg_state = !userinfo.mg_state;
+        return this.$message.error("更新失败");
+      }
+      this.$message.success("更新成功");
+    },
+    addForm: {
+      username: ""
+    },
+    addFormRules: {}
   }
 };
 </script>
