@@ -32,7 +32,21 @@
             <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作" width="180px">
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="设置"
+              placement="top-start"
+              :enterable="false"
+            >
+              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>

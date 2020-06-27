@@ -5,9 +5,10 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
-    Switch,Table,TableColumn,Button,Form,FormItem,Input,Message,Container,Header,Aside,Main,menu,submenu,MenuItemGroup,MenuItem,Breadcrumb,BreadcrumbItem,Card,Row,Col
+    Tooltip,Switch,Table,TableColumn,Button,Form,FormItem,Input,Message,Container,Header,Aside,Main,menu,submenu,MenuItemGroup,MenuItem,Breadcrumb,BreadcrumbItem,Card,Row,Col
 } from 'element-ui'
 
+Vue.use(Tooltip)
 Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
