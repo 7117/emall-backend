@@ -141,15 +141,15 @@ export default {
       addFormRules: {
         username: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
-          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+          { min: 0, max: 20, message: "大小不合适", trigger: "blur" }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+          { min: 0, max: 20, message: "大小不合适", trigger: "blur" }
         ],
         email: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
-          { min: 0, max: 10, message: "大小不合适", trigger: "blur" },
+          { min: 0, max: 20, message: "大小不合适", trigger: "blur" },
           { validator: checkEmail, trigger: "blur" }
         ],
         mobile: [
