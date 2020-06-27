@@ -79,13 +79,13 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="password">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="addForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="email">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="mobile">
+        <el-form-item label="号码" prop="mobile">
           <el-input v-model="addForm.mobile"></el-input>
         </el-form-item>
       </el-form>
@@ -101,6 +101,27 @@
 <script>
 export default {
   data() {
+    // 验证邮箱
+    var checkEmail = (rule, value, cb) => {
+      const regEmail = /^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+)\.[a-z]{2,6}$/;
+
+      if (regEmail.test(value)) {
+        return cb();
+      }
+
+      cb(new Error("请输入合法的邮箱"));
+    };
+    // 验证手机号
+    var checkMobile = (rule, value, cb) => {
+      const regEmail = /^1[34578]\d{9}$/;
+
+      if (regEmail.test(value)) {
+        return cb();
+      }
+
+      cb(new Error("请输入合法的号码"));
+    };
+
     return {
       // 获取用户列表的数据对象
       queryInfo: {
@@ -123,12 +144,18 @@ export default {
           { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "请输入邮箱", trigger: "blur" },
+          { required: true, message: "请输入密码", trigger: "blur" },
           { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
         ],
         email: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
-          { min: 0, max: 10, message: "大小不合适", trigger: "blur" }
+          { min: 0, max: 10, message: "大小不合适", trigger: "blur" },
+          { validator: checkEmail, trigger: "blur" }
+        ],
+        mobile: [
+          { required: true, message: "请输入号码", trigger: "blur" },
+          { min: 0, max: 10, message: "大小不合适", trigger: "blur" },
+          { validator: checkMobile, trigger: "blur" }
         ]
       }
     };
