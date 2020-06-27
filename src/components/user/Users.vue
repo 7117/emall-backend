@@ -70,11 +70,11 @@
       ></el-pagination>
     </el-card>
 
-    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%">
+    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- model双向数据绑定 -->
       <!-- rules验证规则 -->
       <!-- ref表单的引用名称 -->
-      <el-form :model="addForm" :rules="addFormRules" ref="ruleFormRef" label-width="70px">
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
         <!-- prop验证规则 -->
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
@@ -194,10 +194,9 @@ export default {
       }
       this.$message.success("更新成功");
     },
-    addForm: {
-      username: ""
-    },
-    addFormRules: {}
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
+    }
   }
 };
 </script>
