@@ -334,3 +334,19 @@
 [2020-06-27T21:42:11.131] [DEBUG] cheese - admin
 [2020-06-27T21:42:11.138] [DEBUG] cheese - null
 [2020-06-27T21:42:11.138] [DEBUG] cheese - null
+[2020-07-07T14:40:34.850] [DEBUG] cheese - login => username:admin,password:123456
+[2020-07-07T14:40:34.851] [DEBUG] cheese - admin
+[2020-07-07T14:40:34.864] [DEBUG] cheese - null
+[2020-07-07T14:40:34.864] [DEBUG] cheese - null
+[2020-11-20T10:46:36.194] [DEBUG] cheese - login => username:admin,password:123456
+[2020-11-20T10:46:36.195] [DEBUG] cheese - admin
+[2020-11-20T10:46:36.208] [DEBUG] cheese - { inspect: [Function: inspect] }
+[2020-11-20T10:46:36.209] [DEBUG] cheese - 查询失败
+[2020-11-23T22:10:05.865] [DEBUG] cheese - login => username:admin,password:123456
+[2020-11-23T22:10:05.867] [DEBUG] cheese - admin
+[2020-11-23T22:10:05.903] [DEBUG] cheese - null
+[2020-11-23T22:10:05.903] [DEBUG] cheese - null
+[2020-11-24T22:25:58.411] [DEBUG] cheese - login => username:admin,password:123456
+[2020-11-24T22:25:58.412] [DEBUG] cheese - admin
+[2020-11-24T22:25:58.454] [DEBUG] cheese - null
+[2020-11-24T22:25:58.454] [DEBUG] cheese - null
