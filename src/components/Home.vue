@@ -5,7 +5,7 @@
         <img src="../assets/heima.png" />
         <span>电商系统</span>
       </div>
-      <el-button @click="logout" type="info">按钮</el-button>
+      <el-button @click="logout" type="info">退出</el-button>
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
