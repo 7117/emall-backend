@@ -51,7 +51,7 @@
                 placement="top-start"
                 :enterable="false"
             >
-              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope)"></el-button>
             </el-tooltip>
             <el-tooltip
                 class="item"
@@ -111,6 +111,17 @@
         <el-button type="primary" @click="addUser()">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+        title="修改用户"
+        :visible.sync="editDialogVisible"
+        width="50%">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -139,6 +150,9 @@ export default {
     };
 
     return {
+      //修改区域的弹出框控制开关
+      editDialogVisible: false,
+      editForm:{},
       // 获取用户列表的数据对象
       queryInfo: {
         query: "",
@@ -229,7 +243,17 @@ export default {
         this.addDialogVisible = false;
         this.getUserList();
       });
-    }
+    },
+    async showEditDialog(scope) {
+      const {data:res} =await this.$http.get('users/'+scope.row.id)
+
+      if(res.meta.status !==200 ){
+        return this.$message.error("查询失败")
+      }
+      this.editForm = res.data
+      this.editDialogVisible = true
+    },
+
   }
 };
 </script>
