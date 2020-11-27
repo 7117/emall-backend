@@ -11,10 +11,10 @@
       <el-row :gutter="20">
         <el-col :span="9">
           <el-input
-            placeholder="请输入内容"
-            v-model="queryInfo.query"
-            :clearable="true"
-            @clear="getUserList()"
+              placeholder="请输入内容"
+              v-model="queryInfo.query"
+              :clearable="true"
+              @clear="getUserList()"
           >
             <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
@@ -35,23 +35,39 @@
           <!-- 插槽 -->
           <template slot-scope="scope">
             <el-switch
-              v-model="scope.row.mg_state"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="userStateChange(scope.row)"
+                v-model="scope.row.mg_state"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="userStateChange(scope.row)"
             ></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180px">
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             <el-tooltip
-              class="item"
-              effect="dark"
-              content="设置"
-              placement="top-start"
-              :enterable="false"
+                class="item"
+                effect="dark"
+                content="编辑"
+                placement="top-start"
+                :enterable="false"
+            >
+              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            </el-tooltip>
+            <el-tooltip
+                class="item"
+                effect="dark"
+                content="删除"
+                placement="top-start"
+                :enterable="false"
+            >
+              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            </el-tooltip>
+            <el-tooltip
+                class="item"
+                effect="dark"
+                content="设置"
+                placement="top-start"
+                :enterable="false"
             >
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
             </el-tooltip>
@@ -60,13 +76,13 @@
       </el-table>
 
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="queryInfo.pagenum"
-        :page-sizes="[1, 2, 5, 10]"
-        :page-size="queryInfo.pagesize"
-        layout="total,sizes, prev, pager, next,jumper"
-        :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="queryInfo.pagenum"
+          :page-sizes="[1, 2, 5, 10]"
+          :page-size="queryInfo.pagesize"
+          layout="total,sizes, prev, pager, next,jumper"
+          :total="total"
       ></el-pagination>
     </el-card>
 
@@ -140,21 +156,21 @@ export default {
       },
       addFormRules: {
         username: [
-          { required: true, message: "请输入邮箱", trigger: "blur" },
-          { min: 0, max: 20, message: "大小不合适", trigger: "blur" }
+          {required: true, message: "请输入邮箱", trigger: "blur"},
+          {min: 0, max: 20, message: "大小不合适", trigger: "blur"}
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 0, max: 20, message: "大小不合适", trigger: "blur" }
+          {required: true, message: "请输入密码", trigger: "blur"},
+          {min: 0, max: 20, message: "大小不合适", trigger: "blur"}
         ],
         email: [
-          { required: true, message: "请输入邮箱", trigger: "blur" },
-          { min: 0, max: 20, message: "大小不合适", trigger: "blur" },
-          { validator: checkEmail, trigger: "blur" }
+          {required: true, message: "请输入邮箱", trigger: "blur"},
+          {min: 0, max: 20, message: "大小不合适", trigger: "blur"},
+          {validator: checkEmail, trigger: "blur"}
         ],
         mobile: [
-          { required: true, message: "请输入号码", trigger: "blur" },
-          { validator: checkMobile, trigger: "blur" }
+          {required: true, message: "请输入号码", trigger: "blur"},
+          {validator: checkMobile, trigger: "blur"}
         ]
       }
     };
@@ -164,7 +180,7 @@ export default {
   },
   methods: {
     async getUserList() {
-      const { data: res } = await this.$http.get("users", {
+      const {data: res} = await this.$http.get("users", {
         params: this.queryInfo
       });
 
@@ -183,8 +199,8 @@ export default {
       this.getUserList();
     },
     async userStateChange(userinfo) {
-      const { data: res } = await this.$http.put(
-        `users/${userinfo.id}/state/${userinfo.mg_state}`
+      const {data: res} = await this.$http.put(
+          `users/${userinfo.id}/state/${userinfo.mg_state}`
       );
 
       if (res.meta.status != 200) {
@@ -202,7 +218,7 @@ export default {
           return;
         }
         // 网络请求
-        const { data: res } = await this.$http.post("users", this.addForm);
+        const {data: res} = await this.$http.post("users", this.addForm);
 
         if (res.meta.status !== 201) {
           this.$message.error("更新失败");
