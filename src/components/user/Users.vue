@@ -116,7 +116,18 @@
         title="修改用户"
         :visible.sync="editDialogVisible"
         width="50%">
-      <span>这是一段信息</span>
+      <el-form ref="form" :model="editForm" :rules="editFormRules" label-width="80px">
+        <el-form-item label="活动名称">
+          <el-input v-model="editForm.username" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
@@ -152,7 +163,7 @@ export default {
     return {
       //修改区域的弹出框控制开关
       editDialogVisible: false,
-      editForm:{},
+      editForm: {},
       // 获取用户列表的数据对象
       queryInfo: {
         query: "",
@@ -175,6 +186,21 @@ export default {
         ],
         password: [
           {required: true, message: "请输入密码", trigger: "blur"},
+          {min: 0, max: 20, message: "大小不合适", trigger: "blur"}
+        ],
+        email: [
+          {required: true, message: "请输入邮箱", trigger: "blur"},
+          {min: 0, max: 20, message: "大小不合适", trigger: "blur"},
+          {validator: checkEmail, trigger: "blur"}
+        ],
+        mobile: [
+          {required: true, message: "请输入号码", trigger: "blur"},
+          {validator: checkMobile, trigger: "blur"}
+        ]
+      },
+      editFormRules:{
+        username: [
+          {required: true, message: "请输入邮箱", trigger: "blur"},
           {min: 0, max: 20, message: "大小不合适", trigger: "blur"}
         ],
         email: [
@@ -245,9 +271,9 @@ export default {
       });
     },
     async showEditDialog(scope) {
-      const {data:res} =await this.$http.get('users/'+scope.row.id)
+      const {data: res} = await this.$http.get('users/' + scope.row.id)
 
-      if(res.meta.status !==200 ){
+      if (res.meta.status !== 200) {
         return this.$message.error("查询失败")
       }
       this.editForm = res.data
