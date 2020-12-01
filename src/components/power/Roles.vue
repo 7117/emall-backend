@@ -51,7 +51,8 @@
               编辑
             </el-button>
             <el-button type="warning" icon="el-icon-search" size="mini">删除</el-button>
-            <el-button @click="showSetRightDialog" type="info" icon="el-icon-search" size="mini">权限</el-button>
+            <el-button @click="showSetRightDialog(scope.row)" type="info" icon="el-icon-search" size="mini">权限
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,18 +77,19 @@
     </el-dialog>
 
     <!--  权限树的显示-->
-    <el-dialog title="分配权限" :visible.sync="setRightVisibaleDialog" width="50%">
+    <el-dialog @close="setRightDialogClosed" title="分配权限" :visible.sync="setRightVisibaleDialog" width="50%">
 
       <el-tree :data="rightslist"
                :props="treeProps"
                node-key="id"
                default-expand-all
+               ref="treeRef"
                :default-checked-keys="defKeys"
                show-checkbox></el-tree>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="setRightVisibaleDialog = false">取 消</el-button>
-        <el-button type="primary" @click="setRightVisibaleDialog = false">确 定</el-button>
+        <el-button type="primary" @click="allotRights">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -106,14 +108,45 @@ export default {
         label: 'authName',
         children: 'children'
       },
-      defKeys:[105,116]
+      defKeys: [],
+      roleId: ''
     }
   },
   created() {
     this.getRolesList()
   },
   methods: {
-    async showSetRightDialog() {
+    async allotRights() {
+      const keys = [
+        ...this.$refs.treeRef.getHalfCheckedKeys(),
+        ...this.$refs.treeRef.getCheckedKeys()
+      ]
+      const idStr = keys.join(',');
+
+      const {data: res} = await this.$http.post(`roles/${this.roleId}/rights`, {
+        rids: idStr
+      })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("更新失败")
+      } else {
+        this.setRightVisibaleDialog = false
+        this.getRolesList()
+        return this.$message.success("更新成功")
+      }
+    },
+    setRightDialogClosed() {
+      this.defKeys = []
+    },
+    getLeafKeys(node, arr) {
+      if (!node.children) {
+        return arr.push(node.id)
+      }
+      node.children.forEach(item => this.getLeafKeys(item, arr))
+    },
+    async showSetRightDialog(role) {
+      this.roleId = role.id
+
       const {data: res} = await this.$http.get('rights/tree')
 
       if (res.meta.status !== 200) {
@@ -121,6 +154,8 @@ export default {
       }
 
       this.rightslist = res.data
+
+      this.getLeafKeys(role, this.defKeys)
 
       this.setRightVisibaleDialog = true
     },

@@ -5,9 +5,39 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
-    Tree,Tag,MessageBox,Dialog,Pagination,Tooltip,Switch,Table,TableColumn,Button,Form,FormItem,Input,Message,Container,Header,Aside,Main,menu,submenu,MenuItemGroup,MenuItem,Breadcrumb,BreadcrumbItem,Card,Row,Col
+    Option,
+    Select,
+    Tree,
+    Tag,
+    MessageBox,
+    Dialog,
+    Pagination,
+    Tooltip,
+    Switch,
+    Table,
+    TableColumn,
+    Button,
+    Form,
+    FormItem,
+    Input,
+    Message,
+    Container,
+    Header,
+    Aside,
+    Main,
+    menu,
+    submenu,
+    MenuItemGroup,
+    MenuItem,
+    Breadcrumb,
+    BreadcrumbItem,
+    Card,
+    Row,
+    Col
 } from 'element-ui'
 
+Vue.use(Option)
+Vue.use(Select)
 Vue.use(Tree)
 Vue.use(Tag)
 Vue.use(Dialog)
@@ -33,7 +63,6 @@ Vue.use(BreadcrumbItem)
 Vue.use(Card)
 Vue.use(Row)
 Vue.use(Col)
-
 
 
 // 挂在到vue的原型对象上面
