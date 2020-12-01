@@ -77,6 +77,14 @@
 
     <!--  权限树的显示-->
     <el-dialog title="分配权限" :visible.sync="setRightVisibaleDialog" width="50%">
+
+      <el-tree :data="rightslist"
+               :props="treeProps"
+               node-key="id"
+               default-expand-all
+               :default-checked-keys="defKeys"
+               show-checkbox></el-tree>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="setRightVisibaleDialog = false">取 消</el-button>
         <el-button type="primary" @click="setRightVisibaleDialog = false">确 定</el-button>
@@ -93,7 +101,12 @@ export default {
       rolelist: [],
       editDialogVisibleInRolesView: false,
       setRightVisibaleDialog: false,
-      rightslist:[]
+      rightslist: [],
+      treeProps: {
+        label: 'authName',
+        children: 'children'
+      },
+      defKeys:[105,116]
     }
   },
   created() {
