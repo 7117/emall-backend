@@ -18,16 +18,24 @@
           <template slot-scope="scope">
             <el-row :class="['dbbottom',i1===0 ? 'dbtop':'']" v-for="(item1,i1) in scope.row.children" :key="item1.id">
               <el-col :span="5">
-                <el-tag>{{ item1.authName }}</el-tag>
+                <el-tag @close="removeRightById(scope.row,item1.id)" closable>{{ item1.authName }}</el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <el-col :span="19">
                 <el-row :class="[i2 ===0 ?'':'dbtop']" v-for="(item2,i2) in item1.children " :key="item2.id">
                   <el-col :span="6">
-                    <el-tag type="warning">{{item2.authName}}</el-tag>
+                    <el-tag @close="removeRightById(scope.row,item2.id)" closable type="warning">
+                      {{
+                        item2.authName
+                      }}
+                    </el-tag>
                     <i class="el-icon-caret-right"></i>
                   </el-col>
-                  <el-col :span="13">
+                  <el-col :span="18">
+                    <el-tag @close="removeRightById(scope.row,item3.id)" closable type="info"
+                            v-for="(item3,i3) in item2.children" :key="item3.id">
+                      {{ item3.authName }}
+                    </el-tag>
                   </el-col>
                 </el-row>
               </el-col>
@@ -39,7 +47,8 @@
         <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="editDialogVisibleInRoles(scope)">编辑
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="editDialogVisibleInRoles(scope)">
+              编辑
             </el-button>
             <el-button type="warning" icon="el-icon-search" size="mini">删除</el-button>
             <el-button type="info" icon="el-icon-search" size="mini">权限</el-button>
@@ -92,6 +101,37 @@ export default {
     },
     editDialogVisibleInRoles() {
       this.editDialogVisibleInRolesView = true
+    },
+    async removeRightById(role, rightId) {
+
+      await this.$confirm('永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+
+        const {data: res} = await this.$http.delete('roles/' + role.id + '/rights/' + rightId);
+
+        if (res.meta.status !== 200) {
+          this.$message({
+            type: 'info',
+            message: '删除失败'
+          });
+        }
+
+        role.children = res.data
+
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     }
   }
 
@@ -99,6 +139,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-row {
+  display: flex;
+  align-items: center;
+}
+
 .el-tag {
   margin: 7px;
 }
