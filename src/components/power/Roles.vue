@@ -16,11 +16,21 @@
       <el-table :data="rolelist" border stripe>
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-row v-for="(item1,i1) in scope.row.children" :key="item1.id">
+            <el-row :class="['dbbottom',i1===0 ? 'dbtop':'']" v-for="(item1,i1) in scope.row.children" :key="item1.id">
               <el-col :span="5">
                 <el-tag>{{ item1.authName }}</el-tag>
+                <i class="el-icon-caret-right"></i>
               </el-col>
-              <el-col :span="19"></el-col>
+              <el-col :span="19">
+                <el-row :class="[i2 ===0 ?'':'dbtop']" v-for="(item2,i2) in item1.children " :key="item2.id">
+                  <el-col :span="6">
+                    <el-tag type="warning">{{item2.authName}}</el-tag>
+                    <i class="el-icon-caret-right"></i>
+                  </el-col>
+                  <el-col :span="13">
+                  </el-col>
+                </el-row>
+              </el-col>
             </el-row>
           </template>
         </el-table-column>
@@ -89,4 +99,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-tag {
+  margin: 7px;
+}
+
+.dbtop {
+  border-top: 1px solid #eee;
+}
+
+.dbbottom {
+  border-bottom: 1px solid #eee;
+}
 </style>
