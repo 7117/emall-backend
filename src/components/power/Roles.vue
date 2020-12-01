@@ -51,12 +51,13 @@
               编辑
             </el-button>
             <el-button type="warning" icon="el-icon-search" size="mini">删除</el-button>
-            <el-button type="info" icon="el-icon-search" size="mini">权限</el-button>
+            <el-button @click="showSetRightDialog" type="info" icon="el-icon-search" size="mini">权限</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
+    <!-- 编辑按钮的弹出框   -->
     <el-dialog
         title="修改权限"
         :visible.sync="editDialogVisibleInRolesView"
@@ -74,6 +75,14 @@
       </span>
     </el-dialog>
 
+    <!--  权限树的显示-->
+    <el-dialog title="分配权限" :visible.sync="setRightVisibaleDialog" width="50%">
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setRightVisibaleDialog = false">取 消</el-button>
+        <el-button type="primary" @click="setRightVisibaleDialog = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -83,12 +92,25 @@ export default {
     return {
       rolelist: [],
       editDialogVisibleInRolesView: false,
+      setRightVisibaleDialog: false,
+      rightslist:[]
     }
   },
   created() {
     this.getRolesList()
   },
   methods: {
+    async showSetRightDialog() {
+      const {data: res} = await this.$http.get('rights/tree')
+
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取失败')
+      }
+
+      this.rightslist = res.data
+
+      this.setRightVisibaleDialog = true
+    },
     async getRolesList() {
       const {data: res} = await this.$http.get('roles')
 
