@@ -11,7 +11,7 @@
       <!--      按钮-->
       <el-row>
         <el-col>
-          <el-button type="primary">添加分类</el-button>
+          <el-button type="primary" @click="showDialog">添加分类</el-button>
         </el-col>
       </el-row>
 
@@ -56,6 +56,28 @@
 
     </el-card>
 
+    <el-dialog
+        title="添加分类"
+        :visible.sync="dialogVisibleCat"
+        width="50%"
+    >
+
+      <el-form ref="catForm" label-width="80px" :rules="catFormRules">
+        <el-form-item label="活动名称" prop="cat_name">
+          <el-input></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类">
+          <el-input></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleCat = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisibleCat = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
+
   </div>
 </template>
 
@@ -63,6 +85,18 @@
 export default {
   data() {
     return {
+      catForm: {
+        cat_name: '',
+        cat_pid:0,
+        cat_level:0,
+      },
+      catFormRules: {
+        cat_name: [
+          {required: true, message: '请输入活动名称', trigger: 'blur'},
+          {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+        ]
+      },
+      dialogVisibleCat: false,
       queryInfo: {
         type: 3,
         pagenum: 1,
@@ -97,6 +131,9 @@ export default {
     this.getCateList()
   },
   methods: {
+    showDialog() {
+      this.dialogVisibleCat = true
+    },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
       this.getCateList()
