@@ -57,9 +57,10 @@
     </el-card>
 
     <el-dialog
-        title="添加分类"
+        title="分类信息"
         :visible.sync="dialogVisibleCat"
         width="50%"
+        @close="closeCate"
     >
 
       <el-form ref="catForm" label-width="80px" :rules="catFormRules">
@@ -67,13 +68,26 @@
           <el-input></el-input>
         </el-form-item>
         <el-form-item label="父级分类">
-          <el-input></el-input>
+        <el-cascader
+              v-model="selectedData"
+              clearable
+              :options="parentCateList"
+              :props="{
+                      checkStrictly:true,
+                      expandTrigger: 'hover',
+                      value: 'cat_id',
+                      label: 'cat_name',
+                      children: 'children',
+              }"
+              @change="parentChangeAction"
+          >
+          </el-cascader>
         </el-form-item>
       </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisibleCat = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisibleCat = false">确 定</el-button>
+        <el-button type="primary" @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -85,16 +99,15 @@
 export default {
   data() {
     return {
+      parentCateList: [],
+      selectedData: [],
       catForm: {
         cat_name: '',
-        cat_pid:0,
-        cat_level:0,
+        cat_pid: 0,
+        cat_level: 0,
       },
       catFormRules: {
-        cat_name: [
-          {required: true, message: '请输入活动名称', trigger: 'blur'},
-          {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-        ]
+        cat_name: []
       },
       dialogVisibleCat: false,
       queryInfo: {
@@ -131,7 +144,41 @@ export default {
     this.getCateList()
   },
   methods: {
+    closeCate() {
+      this.$refs.catForm.resetFields()
+      this.selectedData = []
+      this.catForm.cat_level = 0
+      this.catForm.cat_pid = 0
+    },
+    parentChangeAction() {
+
+      if (this.selectedData.length > 0) {
+        this.catForm.cat_pid = this.selectedData[this.selectedData.length - 1]
+        this.catForm.cat_level = this.selectedData.length
+      } else {
+        this.catForm.cat_pid = 0
+        this.catForm.cat_level = 0
+      }
+      console.log(this.selectedData)
+    },
+    addCate() {
+      console.log(this.catForm)
+    },
+    async getParent() {
+      const {data: res} = await this.$http.get('categories', {
+        params: {type: 2}
+      })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("返回失败")
+      }
+
+      this.parentCateList = res.data
+
+      console.log(this.parentCateList)
+    },
     showDialog() {
+      this.getParent()
       this.dialogVisibleCat = true
     },
     handleSizeChange(newSize) {

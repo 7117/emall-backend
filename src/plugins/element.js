@@ -5,6 +5,7 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
+    Cascader,
     Option,
     Select,
     Tree,
@@ -36,6 +37,7 @@ import {
     Col
 } from 'element-ui'
 
+Vue.use(Cascader)
 Vue.use(Option)
 Vue.use(Select)
 Vue.use(Tree)
