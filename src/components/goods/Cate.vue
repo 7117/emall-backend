@@ -63,12 +63,12 @@
         @close="closeCate"
     >
 
-      <el-form ref="catForm" label-width="80px" :rules="catFormRules">
+      <el-form :model="catForm" ref="catFormEsRef" label-width="80px" :rules="catFormRules">
         <el-form-item label="活动名称" prop="cat_name">
-          <el-input></el-input>
+          <el-input v-model="catForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类">
-        <el-cascader
+          <el-cascader
               v-model="selectedData"
               clearable
               :options="parentCateList"
@@ -107,7 +107,9 @@ export default {
         cat_level: 0,
       },
       catFormRules: {
-        cat_name: []
+        cat_name: [
+          {required: true, message: '请选择活动区域', trigger: 'blur'}
+        ]
       },
       dialogVisibleCat: false,
       queryInfo: {
@@ -145,10 +147,11 @@ export default {
   },
   methods: {
     closeCate() {
-      this.$refs.catForm.resetFields()
+      this.$refs.catFormEsRef.resetFields()
       this.selectedData = []
       this.catForm.cat_level = 0
       this.catForm.cat_pid = 0
+
     },
     parentChangeAction() {
 
@@ -163,6 +166,20 @@ export default {
     },
     addCate() {
       console.log(this.catForm)
+      this.$refs.catFormEsRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error("验证失败")
+        }
+
+        const {data: res} = await this.$http.post('categories', this.catForm)
+
+        if (res.meta.status !== 201) {
+          return this.$message.error("添加失败")
+        }
+        this.getCateList()
+        this.dialogVisibleCat = false
+        this.$message.success("修改成功");
+      })
     },
     async getParent() {
       const {data: res} = await this.$http.get('categories', {

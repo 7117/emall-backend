@@ -5,6 +5,9 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
+    Tabs,
+    TabPane,
+    Alert,
     Cascader,
     Option,
     Select,
@@ -37,6 +40,9 @@ import {
     Col
 } from 'element-ui'
 
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Alert)
 Vue.use(Cascader)
 Vue.use(Option)
 Vue.use(Select)
