@@ -25,3 +25,8 @@ html, body, #app {
 .el-cascader {
     width: 100%;
 }
+
+.el-steps {
+    margin: 15px 0;
+    font-size: 13px;
+}

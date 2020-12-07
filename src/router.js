@@ -7,26 +7,30 @@ import Users from './components/user/Users.vue'
 import Rights from './components/power/Rights'
 import Roles from './components/power/Roles.vue'
 import Cate from './components/goods/Cate.vue'
-import Params from "./components/goods/Params";
+import Params from "./components/goods/Params.vue";
+import List from "./components/goods/List.vue";
+import Add from "./components/goods/Add.vue";
 
 
 Vue.use(Router)
 
 const router = new Router({
     routes: [
-        { path: '/login', component: Login },
+        {path: '/login', component: Login},
         {
             path: '/home',
             component: Home,
             redirect: '/welcome',
             children: [
-                { path: '/welcome', component: Welcome },
-                { path: '/users', component: Users },
-                { path: '/rights', component: Rights },
-                { path: '/categories', component: Cate },
-                { path: '/params', component: Params },
-                { path: '/roles', component: Roles }
-                ]
+                {path: '/welcome', component: Welcome},
+                {path: '/users', component: Users},
+                {path: '/rights', component: Rights},
+                {path: '/categories', component: Cate},
+                {path: '/params', component: Params},
+                {path: '/roles', component: Roles},
+                {path: '/goods', component: List},
+                {path: '/goods/add', component: Add}
+            ]
         },
     ]
 })

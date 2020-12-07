@@ -47,7 +47,7 @@
           <el-table :data="manyTableData" border stripe>
             <el-table-column type="expand">
               <template slot-scope="scope">
-                <el-tag closable v-for="(v,k) in scope.row.attr_vals" :key="k">
+                <el-tag @close="handleCloseTag(i,scope.row)" closable v-for="(v,k) in scope.row.attr_vals" :key="k">
                   {{ v }}
                 </el-tag>
 
@@ -67,8 +67,6 @@
 
               </template>
             </el-table-column>
-
-
             <el-table-column label="ID" type="index"></el-table-column>
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作名称" prop="attr_name">
@@ -82,7 +80,30 @@
         <el-tab-pane label="配置管理" name="only" @tab-click="handleChangeCate">
           <el-button @click="dialogVisible = true" type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
           <el-table :data="onlyTableData" border stripe>
-            <el-table-column type="expand"></el-table-column>
+            <el-table-column type="expand">
+              <el-table-column type="expand">
+                <template slot-scope="scope">
+                  <el-tag @close="handleCloseTag(i,scope.row)" closable v-for="(v,k) in scope.row.attr_vals" :key="k">
+                    {{ v }}
+                  </el-tag>
+
+                  <el-input
+                      class="input-new-tag"
+                      v-if="scope.row.inputVisible"
+                      v-model="scope.row.inputValue"
+                      ref="saveTagInput"
+                      size="small"
+                      @keyup.enter.native="handleInputConfirm(scope.row)"
+                      @blur="handleInputConfirm(scope.row)"
+                  >
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag
+                  </el-button>
+
+
+                </template>
+              </el-table-column>
+            </el-table-column>
             <el-table-column label="ID" type="index"></el-table-column>
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作名称" prop="attr_name">
@@ -177,13 +198,45 @@ export default {
     this.getCateList()
   },
   methods: {
-    handleInputConfirm(row) {
+    async handleCloseTag(i, row) {
+      row.attr_vals.splice(i, 1)
+
+      const {data: res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`, {
+        'attr_name': row.attr_name,
+        'attr_sel': row.attr_sel,
+        'attr_vals': row.attr_vals.join(','),
+      })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("失败")
+      } else {
+        return this.$message.success("成功")
+      }
+    },
+    async handleInputConfirm(row) {
       if (row.inputValue.trim().length === 0) {
         row.inputValue = ''
         row.inputVisible = false
         return;
       }
       //  提交至数据库
+      row.attr_vals.push(row.inputValue.trim())
+
+      row.inputValue = ''
+      row.inputVisible = false
+
+      const {data: res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`, {
+        'attr_name': row.attr_name,
+        'attr_sel': row.attr_sel,
+        'attr_vals': row.attr_vals.join(','),
+      })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("失败")
+      } else {
+        return this.$message.success("成功")
+      }
+
     },
     showInput(row) {
       row.inputVisible = true

@@ -5,6 +5,8 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
+    Steps,
+    Step,
     Tabs,
     TabPane,
     Alert,
@@ -40,6 +42,8 @@ import {
     Col
 } from 'element-ui'
 
+Vue.use(Steps)
+Vue.use(Step)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Alert)
