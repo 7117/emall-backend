@@ -5,6 +5,7 @@ import Vue from 'vue'
 // import { Message } from 'element-ui'
 // 简写
 import {
+    Upload,
     checkboxGroup,
     checkbox,
     Steps,
@@ -44,6 +45,7 @@ import {
     Col
 } from 'element-ui'
 
+Vue.use(Upload)
 Vue.use(checkboxGroup)
 Vue.use(checkbox)
 Vue.use(Steps)
