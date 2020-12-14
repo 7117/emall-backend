@@ -91,6 +91,17 @@
           </el-tab-pane>
 
           <el-tab-pane label="其他按钮" name="4">
+            <template>
+              <quill-editor
+                  v-model="addForm.goods_introduce"
+              >
+              </quill-editor>
+              <el-button
+                  @click="add"
+                  type="primary"
+                  class="btnAdd">添加商品
+              </el-button>
+            </template>
           </el-tab-pane>
         </el-tabs>
       </el-form>
@@ -131,6 +142,7 @@ export default {
         goods_number: 0,
         goods_cat: [],
         pics: [],
+        goods_introduce: '',
       },
       activeIndex: '0',
       catelist: [],
@@ -147,6 +159,17 @@ export default {
     this.getCateList()
   },
   methods: {
+    add() {
+      console.log(this.addForm)
+
+      this.$refs.addFormRef.validate(
+          (valid) => {
+            if (!valid) {
+              return this.$message.error("请填写信息完整")
+            }
+          }
+      )
+    },
     handlePreview(file) {
       this.previewPath = file.response.data.url
       this.previewVisible = true
@@ -224,5 +247,9 @@ export default {
 
 .previewImg {
   width: 100%;
+}
+
+.btnAdd {
+  margin-top: 15px;
 }
 </style>
