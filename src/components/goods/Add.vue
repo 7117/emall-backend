@@ -18,19 +18,70 @@
       </el-steps>
 
 
-      <el-form label-position="top" :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
-        <el-form-item label="活动名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
-        </el-form-item>
-        <el-tabs v-model="activeIndex" :tab-position="'left'" style="height: 200px;">
-          <el-tab-pane label="用户管理" name="0">用户管理</el-tab-pane>
-          <el-tab-pane label="配置管理" name="1">配置管理</el-tab-pane>
-          <el-tab-pane label="角色管理" name="2">角色管理</el-tab-pane>
-          <el-tab-pane label="定时任务" name="3">定时任务</el-tab-pane>
-          <el-tab-pane label="定时任务" name="4">定时任务</el-tab-pane>
+      <el-form label-position="top" :model="addForm" :rules="addFormRules" ref="addFormRef"
+               label-width="100px">
+        <el-tabs @tab-click="tabClick" v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTab">
+          <el-tab-pane label="用户管理" name="0">
+            <el-form-item label="活动名称" prop="goods_name">
+              <el-input v-model="addForm.goods_name"></el-input>
+            </el-form-item>
+            <el-form-item label="活动名称" prop="goods_price">
+              <el-input v-model="addForm.goods_price" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="活动名称" prop="goods_weight">
+              <el-input v-model="addForm.goods_weight"></el-input>
+            </el-form-item>
+            <el-form-item label="活动名称" prop="goods_name">
+              <el-input v-model="addForm.goods_name"></el-input>
+            </el-form-item>
+            <el-form-item label="活动名称" prop="goods_cat">
+              <el-cascader
+                  v-model="addForm.goods_cat"
+                  clearable
+                  :options="catelist"
+                  :props="{
+                      expandTrigger: 'hover',
+                      value: 'cat_id',
+                      label: 'cat_name',
+                      children: 'children',
+              }"
+                  @change="parentChangeAction"
+              >
+              </el-cascader>
+            </el-form-item>
+          </el-tab-pane>
+
+          <el-tab-pane label="用户管理" name="1">
+            <el-form-item
+                v-for="item in manyTableData"
+                :label="item.attr_name"
+                :key="item.attr_id"
+            >
+              <el-checkbox-group v-model="item.attr_vals">
+                <el-checkbox
+                    border
+                    v-for="(v,k) in item.attr_vals"
+                    :key="k"
+                    :label="v"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-tab-pane>
+
+          <el-tab-pane label="用户管理" name="2">
+            <el-form-item
+                v-for="item in onlyTableData"
+                :label="item.attr_name"
+                :key="item.attr_id"
+            >
+              <el-input v-model="item.attr_vals">
+              </el-input>
+            </el-form-item>
+          </el-tab-pane>
+
+          <el-tab-pane label="用户管理" name="3">
+          </el-tab-pane>
         </el-tabs>
       </el-form>
-
     </el-card>
   </div>
 </template>
@@ -39,18 +90,93 @@
 export default {
   data() {
     return {
-      addFormRules: {},
-      addForm: {},
-      activeIndex: '0'
+      selectedData: [],
+      addFormRules: {
+        goods_name: [{required: true, message: '请输入活动名称', trigger: 'blur'},],
+        goods_price: [{required: true, message: '请输入活动名称', trigger: 'blur'},],
+        goods_weight: [{required: true, message: '请输入活动名称', trigger: 'blur'},],
+        goods_number: [{required: true, message: '请输入活动名称', trigger: 'blur'},],
+        goods_cat: [{required: true, message: '请输入活动名称', trigger: 'blur'},],
+      },
+      addForm: {
+        goods_name: '',
+        goods_price: 0,
+        goods_weight: 0,
+        goods_number: 0,
+        goods_cat: [],
+      },
+      activeIndex: '0',
+      catelist: [],
+      activeSed: '',
+      activeName: '',
+      oldActiveName: '',
+      manyTableData: [],
+      onlyTableData: [],
     }
   },
   created() {
+    this.getCateList()
   },
-  methods: {},
-  computed: {}
+  methods: {
+    async tabClick() {
+      if (this.activeIndex === '1') {
+        const {data: res} = await this.$http.get(`categories/` + this.cateId + '/attributes', {
+          params: {
+            sel: 'many'
+          }
+        })
+        if (res.meta.status !== 200) {
+          return this.$message.error("失败")
+        }
+        this.manyTableData = res.data
+        this.manyTableData.forEach(item => {
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(',')
+        })
+        console.log(this.manyTableData)
+      } else if (this.activeIndex === '2') {
+        const {data: res} = await this.$http.get(`categories/` + this.cateId + '/attributes', {
+          params: {
+            sel: 'only'
+          }
+        })
+        if (res.meta.status !== 200) {
+          return this.$message.error("失败")
+        }
+        this.onlyTableData = res.data
+        this.onlyTableData.forEach(item => {
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(',')
+        })
+        console.log(this.onlyTableData)
+      }
+    },
+    beforeTab(activeName, oldActiveName) {
+      if (oldActiveName === '0' && this.addForm.goods_cat.length < 2) {
+        this.$message.error("请完整表单")
+        return false
+      }
+    },
+    parentChangeAction() {
+    },
+    async getCateList() {
+      const {data: res} = await this.$http.get(`categories`)
+
+      if (res.meta.status !== 200) {
+        return this.$message.error("失败")
+      }
+
+      this.catelist = res.data
+    },
+  },
+  computed: {
+    cateId() {
+      return this.addForm.goods_cat[this.addForm.goods_cat.length - 1]
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
-
+.el-checkbox {
+  margin: 0 5px 0 0;
+}
 </style>
