@@ -92,6 +92,15 @@
         </el-tabs>
       </el-form>
     </el-card>
+
+    <el-dialog
+        title="提示"
+        :visible.sync="previewVisible"
+        width="50%"
+    >
+      <img :src="previewPath" class="previewImg">
+    </el-dialog>
+
   </div>
 </template>
 
@@ -127,14 +136,17 @@ export default {
       oldActiveName: '',
       manyTableData: [],
       onlyTableData: [],
+      previewPath: '',
+      previewVisible: false,
     }
   },
   created() {
     this.getCateList()
   },
   methods: {
-    handlePreview() {
-
+    handlePreview(file) {
+      this.previewPath = file.response.data.url
+      this.previewVisible = true
     },
     handleRemove(file) {
       const filePath = file.response.data.tmp_path
@@ -205,5 +217,9 @@ export default {
 <style lang="less" scoped>
 .el-checkbox {
   margin: 0 5px 0 0;
+}
+
+.previewImg {
+  width: 100%;
 }
 </style>
