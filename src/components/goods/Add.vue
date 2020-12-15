@@ -119,10 +119,12 @@
 </template>
 
 <script>
+
+import _ from 'lodash'
+
 export default {
   data() {
     return {
-
       headObj: {
         Authorization: window.sessionStorage.getItem('token')
       },
@@ -137,12 +139,13 @@ export default {
       },
       addForm: {
         goods_name: '',
-        goods_price: 0,
-        goods_weight: 0,
-        goods_number: 0,
+        goods_price: 1,
+        goods_weight: 1,
+        goods_number: 1,
         goods_cat: [],
         pics: [],
         goods_introduce: '',
+        attrs: [],
       },
       activeIndex: '0',
       catelist: [],
@@ -160,13 +163,40 @@ export default {
   },
   methods: {
     add() {
-      console.log(this.addForm)
-
       this.$refs.addFormRef.validate(
-          (valid) => {
+          async (valid) => {
             if (!valid) {
               return this.$message.error("请填写信息完整")
             }
+            const form = _.cloneDeep(this.addForm)
+            form.goods_cat = form.goods_cat.join(',')
+            this.manyTableData.forEach(item => {
+              const newInfo = {
+                attr_id: item.attr_id,
+                attr_vals: item.attr_vals.join(','),
+              }
+              this.addForm.attrs.push(newInfo)
+            })
+
+            this.onlyTableData.forEach(item => {
+              const newInfo = {
+                attr_id: item.attr_id,
+                attr_vals: item.attr_vals,
+              }
+              this.addForm.attrs.push(newInfo)
+            })
+            form.attrs = this.addForm.attrs
+
+            const {data: res} = await this.$http.post('goods', form)
+
+            console.log(form)
+            console.log(res)
+            if (res.meta.status !== 201) {
+              return this.$message.error("失败")
+            }
+            this.$message.success("成功")
+
+            this.$router.push('/goods')
           }
       )
     },
