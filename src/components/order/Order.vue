@@ -90,10 +90,18 @@
     </el-dialog>
 
     <el-dialog
-        title="提示"
+        title="物流提示"
         :visible.sync="processVisible"
         width="50%"
     >
+      <el-timeline>
+        <el-timeline-item
+            v-for="(activity, index) in processInfo"
+            :key="index"
+            :timestamp="activity.time">
+          {{ activity.context }}
+        </el-timeline-item>
+      </el-timeline>
     </el-dialog>
   </div>
 </template>
@@ -136,6 +144,8 @@ export default {
       if (this.kuaiData[0].meta.status !== 200) {
         return this.$message.error("失败了")
       }
+
+      this.processInfo = this.kuaiData[0].data
       this.$message.success("成功了")
       this.processVisible = true
     },
@@ -169,6 +179,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "../../plugins/timeline/timeline.css";
+@import "../../plugins/timeline-item/timeline-item(1).css";
 .el-cascader {
   width: 100%;
 }

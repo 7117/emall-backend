@@ -45,6 +45,9 @@ import {
     Col
 } from 'element-ui'
 
+import Timeline from './timeline/index'
+import TimelineItem from './timeline-item/index'
+
 Vue.use(Upload)
 Vue.use(checkboxGroup)
 Vue.use(checkbox)
@@ -81,6 +84,8 @@ Vue.use(BreadcrumbItem)
 Vue.use(Card)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 
 
 // 挂在到vue的原型对象上面
