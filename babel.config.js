@@ -1,6 +1,6 @@
 const prodPlugins = []
 
-if(process.env.MODE_ENV === 'production'){
+if (process.env.MODE_ENV === 'production') {
     prodPlugins.push('transform-remove-console')
 }
 
@@ -16,6 +16,7 @@ module.exports = {
                 "styleLibraryName": "theme-chalk"
             }
         ],
-        ...prodPlugins
+        ...prodPlugins,
+        '@babel/plugin-syntax-dynamic-import'
     ]
 }
